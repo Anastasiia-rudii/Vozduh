@@ -1,0 +1,605 @@
+<head>
+  <style>
+    ::selection{
+        background: #EDF1FF;
+        color: #fff;
+      }
+      .wrapper{
+        overflow: hidden;
+        max-width: 390px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0px 15px 20px rgba(0,0,0,0.5);
+      }
+      .wrapper .title-text{
+        display: flex;
+        width: 200%;
+      }
+      .wrapper .title{
+        width: 50%;
+        font-size: 30px;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+      }
+      .wrapper .slide-controls{
+        position: relative;
+        display: flex;
+        height: 40px;
+        width: 100%;
+        overflow: hidden;
+        margin: 5px 0 10px 0;
+        justify-content: space-between;
+        border: 1px solid lightgrey;
+        border-radius: 5px;
+      }
+      .slide-controls .slide{
+        height: 100%;
+        width: 100%;
+        color: #fff;
+        font-size: 17px;
+        font-weight: 400;
+        text-align: center;
+        line-height: 38px;
+        cursor: pointer;
+        z-index: 1;
+        transition: all 0.6s ease;
+      }
+      .slide-controls label.signup{
+        color: #000;
+      }
+      .slide-controls .slider-tab{
+        position: absolute;
+        height: 100%;
+        width: 50%;
+        left: 0;
+        z-index: 0;
+        border-radius: 5px;
+        background: #D19C97;
+        transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+      }
+      input[type="radio"]{
+        display: none;
+      }
+      #signup:checked ~ .slider-tab{
+        left: 50%;
+      }
+      #signup:checked ~ label.signup{
+        color: #fff;
+        cursor: default;
+        user-select: none;
+      }
+      #signup:checked ~ label.login{
+        color: #D19C97;
+      }
+      #login:checked ~ label.signup{
+        color: #D19C97;
+      }
+      #login:checked ~ label.login{
+        cursor: default;
+        user-select: none;
+      }
+      .wrapper .form-container{
+        width: 100%;
+        overflow: hidden;
+      }
+      .form-container .form-inner{
+        display: flex;
+        width: 200%;
+      }
+      .form-container .form-inner form{
+        width: 50%;
+        transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+      }
+      .form-inner form .field{
+        height: 50px;
+        width: 100%;
+        margin-top: 3px;
+      }
+      input,
+      input::-webkit-input-placeholder {
+          font-size: 14px;
+          line-height: 3;
+      }
+      .form-inner form .field input{
+        height: 40px;
+        width: 100%;
+        outline: none;
+        padding-left: 15px;
+        border-radius: 5px;
+        border: 1px solid lightgrey;
+        border-bottom-width: 2px;
+        font-size: 17px;
+        transition: all 0.3s ease;
+      }
+      .form-inner form .field input:focus{
+        border-color: #D19C97;
+      }
+      .form-inner form .field input::placeholder{
+        color: #999;
+        transition: all 0.3s ease;
+      }
+      form .field input:focus::placeholder{
+        color: #D19C97;
+      }
+      .form-inner form .pass-link{
+        margin-top: 5px;
+      }
+      .form-inner form .signup-link{
+        text-align: center;
+        margin-top: 10px;
+      }
+      .form-inner form .pass-link a,
+      .form-inner form .signup-link a, p{
+        color: #D19C97;
+        text-decoration: none;
+      }
+      p{
+        margin:0;
+      }
+      .form-inner form .pass-link a:hover,
+      .form-inner form .signup-link a:hover{
+        text-decoration: underline;
+      }
+      form .btn{
+        height: 40px;
+        width: 100%;
+        border-radius: 5px;
+        position: relative;
+        overflow: hidden;
+      }
+      form .btn .btn-layer{
+        height: 40px;
+        width: 300%;
+        position: absolute;
+        left: -100%;
+        background: #D19C97;
+        border-radius: 5px;
+        transition: all 0.4s ease;;
+      }
+      form .btn:hover .btn-layer{
+        left: 0;
+        background: #e6e6ff;
+      }
+      form .btn input[type="submit"]{
+        height: 40px;
+        width: 100%;
+        z-index: 1;
+        position: relative;
+        background: none;
+        border: none;
+        color: #fff;
+        padding-left: 0;
+        border-radius: 5px;
+        font-size: 20px;
+        font-weight: 500;
+        cursor: pointer;
+        font-size: 17px;
+      }
+      .captcha{
+        margin: 5% 0 0 0;
+        border-radius: 5px;
+        border: 1px solid lightgrey;
+        border-bottom-width: 2px;
+        font-size: 17px;
+      }     
+      #okno {
+        max-width: 390px;
+        height: 100%;
+        text-align: center;
+        padding: 30px;
+        display: none;
+        
+        /*позиционируем и центрируем*/
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+      }
+      #okno:target {display: block;}
+
+      #dimming {
+        background: rgba(102, 102, 102, 0.5);
+      }
+      #dimming:target {display: block;}
+      
+      .h4{
+        color:#D19C97;
+      }
+  </style>
+<body>
+     <!-- Vendor -->
+        <div class="container-fluid mb-5">
+            <div class="row border-top px-xl-5">
+                <div class="col-lg-9 offset-lg-3 d-none d-lg-block">
+                    <div id="header-carousel" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner mr-auto py-0">
+                            <div class="carousel-item active" style="height: 410px;">
+                            <img class="img-fluid" src="/view/img/k1.jpg" alt="Image">
+                            </div>
+                            <div class="carousel-item" style="height: 410px;">
+                            <img class="img-fluid" src="/view/img/k2.jpg" alt="Image">
+                            </div>
+                            <div class="carousel-item" style="height: 410px;">
+                            <img class="img-fluid" src="/view/img/k3.jpg" alt="Image">
+                            </div>
+                            <div class="carousel-item" style="height: 410px;">
+                            <img class="img-fluid" src="/view/img/k4.jpg" alt="Image">
+                            </div>
+                            <div class="carousel-item" style="height: 410px;">
+                            <img class="img-fluid" src="view/img/k51.jpg" alt="Image">
+                            </div>
+                            <div class="carousel-item" style="height: 410px;">
+                            <img class="img-fluid" src="view/img/k6.jpg" alt="Image">
+                            </div>
+                            <div class="carousel-item" style="height: 410px;">
+                            <img class="img-fluid" src="view/img/k7.jpg" alt="Image">
+                            </div>
+                            <div class="carousel-item" style="height: 410px;">
+                            <img class="img-fluid" src="view/img/k8.jpg" alt="Image">
+                            </div>
+                            <div class="carousel-item" style="height: 410px;">
+                            <img class="img-fluid" src="view/img/k9.jpg" alt="Image">
+                            </div>
+                        </div>    
+                    </div>
+                        <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
+                            <div class="btn btn-dark" style="width: 45px; height: 45px;">
+                                <span class="carousel-control-prev-icon mb-n2"></span>
+                            </div>
+                        </a>
+                        <a class="carousel-control-next" href="#header-carousel" data-slide="next">
+                            <div class="btn btn-dark" style="width: 45px; height: 45px;">
+                                <span class="carousel-control-next-icon mb-n2"></span>
+                            </div>
+                        </a>
+                </div>
+            </div>
+        </div>
+
+
+    <!-- Vendor End -->
+
+    <!-- Subscribe-->
+ 
+    <div class="container-fluid bg-secondary my-5">
+        <div class="row justify-content-md-center py-5 px-xl-5">
+            <div class="col-md-6 col-12 py-5">
+                <div class="text-center mb-2 pb-2">
+                    <h2 class="section-title px-5 mb-3"><span class="bg-secondary px-2">О НАС</span></h2>
+                    <p>Мы магазин "Воздушный" работаем с 2012 года и еще ни разу не было такого, что бы кто-то не сказал "ВАУ!" получив свой заказ! Если вы хотите яркие, красивые, а главное незабываемые праздники, то вам точно к нам! Наш каталог постоянно пополняется новинками, все шарики яркие, цветные, привлекают внимание детей и взрослых. Круглосуточная доставка шаров позволит сделать день незабываемым, с раннего утра и до позднего вечера! Гарантируем полёт шаров от 3 дней до месяца!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Subscribe End -->
+
+    <!-- instruction -->
+    
+   <style>   
+.instruction {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  margin:auto;
+  width: 200px;
+  height: 200px;
+}
+
+.instruction img {
+  display: block;
+  position: relative;
+  width: 100%;
+
+}
+
+.instruction__text {
+  display: flex;
+  position: absolute;
+  text-align: center;
+  align-items: center;
+  vertical-align: top;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #EDF1FF;
+  opacity: 0;
+  color: #D19C97;
+  -webkit-transition: all 0.7s ease-in-out;
+  -moz-transition: all 0.7s ease-in-out;
+  -ms-transition: all 0.7s ease-in-out;
+  -o-transition: all 0.7s ease-in-out;
+  transition: all 0.7s ease-in-out;
+}
+.instruction:hover .instruction__text {
+  opacity: 1;
+}
+p {
+  text-align: center;
+}
+</style>
+<div class="text-center my-5">
+    <h2 class="section-title px-5 mb-3"><span class="px-2">как заказать</span></h2>
+</div>    
+<div class="container-fluid my-5 center">
+    <div class="row px-xl-5">
+            <div class="instruction"><img src="view/img/instruction/1.jpg">
+                <div class="instruction__text">
+                <p>Посмотрите каталог</p>
+                </div>
+            </div> 
+            <div class="instruction"><img src="view/img/instruction/2.jpg">
+                <div class="instruction__text">
+                <p>Позвоните или напишите нам</p>
+                </div>
+            </div>     
+            <div class="instruction"><img src="view/img/instruction/3.jpg">
+                <div class="instruction__text">
+                <p>Обговарим детали Вашего заказа</p>
+                </div>
+            </div>     
+            <div class="instruction"><img src="view/img/instruction/4.jpg">
+                <div class="instruction__text">
+                <p>Доставка в удобное для Вас время</p>
+                </div>
+            </div>     
+            <div class="instruction"><img src="view/img/instruction/5.jpg">
+                <div class="instruction__text">
+                <p>Оплата при получении</p>
+                </div>
+            </div>     
+            <div class="instruction"><img src="view/img/instruction/6.jpg">
+                <div class="instruction__text">
+                <p>Радуетесь и заказываете ещё!</p>
+                </div>
+            </div>      
+    </div>    
+</div>     
+    <!-- instruction End -->
+
+    <!-- comment  -->
+<style>
+   .thumb img  {
+    border: 2px solid #D19C97; /* Рамка вокруг фотографии */
+    padding: 15px; /* Расстояние от картинки до рамки */
+    background: #EDF1FF; /* Цвет фона */
+    margin-right: 10px; /* Отступ справа */
+    margin-bottom: 10px; /* Отступ снизу */
+   }
+</style>
+
+
+<div class="text-center my-5 center">
+    <h2 class="section-title px-5 mb-3"><span class="px-2">Отзывы</span></h2>
+</div> 
+<p class="thumb">
+   <img src="view/img/comment/1.jpg" alt="Фотография 1" width="300" height="400">
+   <img src="view/img/comment/2.jpg" alt="Фотография 2" width="300" height="400">
+   <img src="view/img/comment/3.jpg" alt="Фотография 3" width="300" height="400">
+   <img src="view/img/comment/4.jpg" alt="Фотография 4" width="300" height="400">
+   <img src="view/img/comment/5.jpg" alt="Фотография 5" width="300" height="400">
+   <img src="view/img/comment/6.jpg" alt="Фотография 6" width="300" height="400">
+   <img src="view/img/comment/7.jpg" alt="Фотография 7" width="300" height="400">
+   <img src="view/img/comment/8.jpg" alt="Фотография 8" width="300" height="400">
+   <img src="view/img/comment/9.jpg" alt="Фотография 9" width="300" height="400">
+   <img src="view/img/comment/10.jpg" alt="Фотография 10" width="300" height="400">
+   <img src="view/img/comment/11.jpg" alt="Фотография 11" width="300" height="400">
+   <img src="view/img/comment/12.jpg" alt="Фотография 12" width="300" height="400">
+</p>
+
+
+    <!-- comment end -->
+
+
+<!-- video Start -->
+<div class="text-center my-5 center d-none d-lg-block">
+    <div class="text-center">
+    <h2 class="section-title px-5 mb-3"><span class="px-2">Видео</span></h2>
+ </div>
+<iframe src="https://vk.com/video_ext.php?oid=-120651441&id=456239028&hash=c1b4456968719811&hd=2" width="400" height="500" allowfullscreen></iframe>
+<iframe src="https://vk.com/video_ext.php?oid=-120651441&id=456239053&hash=bb0c4ef108334bb6&hd=2" width="400" height="500" allowfullscreen></iframe>
+<iframe src="https://vk.com/video_ext.php?oid=-120651441&id=456239052&hash=2b068c3966502985&hd=2" width="400" height="500" allowfullscreen></iframe>
+<iframe src="https://vk.com/video_ext.php?oid=-120651441&id=456239055&hash=74050afafbfe0842&hd=2" width="400" height="500" allowfullscreen></iframe>
+</div>
+
+
+<!-- video and -->
+
+
+<!-- Vendor Start -->
+    <div class="container-fluid py-5">
+        <div class="row px-xl-4 ">
+            <div class="col">
+                <div class="owl-carousel vendor-carousel">
+                    <div class="vendor-item text-center p-4" style="width: 250px;">
+                        <a href="/goods/chocolate"><span>букеты из шаров</span></a> 
+                        <img src="view/img/цветы.jpg" alt="">
+                    </div>
+                    <div class="vendor-item text-center p-4" style="width: 250px;">
+                        <a href="/goods/big"><span>шары гиганты </span></a> 
+                        <img src="view/img/шары.jpg" alt="">
+                    </div>
+                    <div class="vendor-item text-center p-4" style="width: 250px;">
+                        <a href="/goods/colors"><span>варианты по цвету </span></a> 
+                        <img src="view/img/краски.jpg" alt="">
+                    </div>
+                    <div class="vendor-item text-center p-4" style="width: 250px;">
+                        <a href="/goods/baby"><span>шары для детей</span></a> 
+                        <img src="view/img/дети.jpg" alt="">
+                    </div>
+                    <div class="vendor-item text-center p-4" style="width: 250px;">
+                        <a href="/delivery"><span>доставка и оплата</span></a> 
+                        <img src="view/img/доставка.jpg" alt="">
+                    </div>
+                    <div class="vendor-item text-center p-4" style="width: 250px;">
+                        <a href="/contact"><span>контакты</span></a> 
+                        <img src="view/img/телефон.jpg" alt="">
+                    </div>
+                    <div class="vendor-item text-center p-4" style="width: 250px;">
+                        <a href="/goods/birthday"><span>шары на дерь рождения</span></a> 
+                        <img src="view/img/день рождения.jpg" alt="">
+                    </div>
+                    <div class="vendor-item text-center p-4" style="width: 250px;">
+                        <a href="/goods/present"><span>подарки ручной работы</span></a> 
+                        <img src="view/img/подарки.jpg" alt="">
+                    </div>
+                    <div class="vendor-item text-center p-4" style="width: 250px;">
+                        <a href="/goods/decoration"><span>оформление праздников</span></a> 
+                        <img src="view/img/праздник.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Vendor End -->
+    <!-- вход и регистрация -->
+            <div id="container dimming">
+                       <div class="container  okno" id="okno">
+                        <div class="wrapper col-4" id="pop-checkbox">
+                                 <div class="title-text">
+                                    <div class="title login">
+                                       <p>Войти</p>
+                                    </div>
+                                    <div class="title signup">
+                                       <p>Регистрация</p>
+                                    </div>
+                                 </div>
+                                 <div class="form-container">
+                                    <div class="slide-controls">
+                                       <input type="radio" name="slide" id="login" checked>
+                                       <input type="radio" name="slide" id="signup">
+                                       <label for="login" class="slide login">Войти</label>
+                                       <label for="signup" class="slide signup">Регистрация</label>
+                                       <div class="slider-tab"></div>
+                                    </div>
+                                    <div class="form-inner">
+                                       <form onsubmit="sendFormauth(this); return false" class="login">
+                                          <div class="field">
+                                             <input name="email" type="email" placeholder="Email" required>
+                                          </div>
+                                          <div class="field">
+                                             <input name="pass" id="pass" type="password" placeholder="Пароль" required>
+                                             <p id="info" style="color:red; font-size: 8px; margin-bottom: 2%;"></p>
+                                          </div>
+                                          <div class="pass-link">
+                                             <a href="/reset_password.php">Забыли пароль?</a>
+                                          </div>
+                                          <div>
+                                            <p>
+                                              <img src="/view/captcha.php" alt=""/> <br>
+                                              <input class="captcha" type="text" name="captcha" placeholder="Проверочный код" required>
+                                            </p>
+                                            <p class='mesage_error' style="color:red; font-size: 8px; margin-bottom: 2%;"></p>
+                                          </div>
+                                          <div class="field btn">
+                                             <div class="btn-layer"></div>
+                                             <input name="btn_submit" type="submit" value="Войти">
+                                          </div>
+                                          <div class="signup-link">
+                                             Новый покупатель? <a href="">Зарегистрируйся</a>
+                                          </div>
+                                       </form>
+                                       <form onsubmit="sendForm(this); return false" class="signup" method="POST" id="formContainer">
+                                          <div class="field">
+                                             <input name="name" type="text" placeholder="Имя" required>
+                                          </div>
+                                          <div class="field">
+                                             <input name="lastname" type="text" placeholder="Фамилия" required>
+                                          </div>
+                                          <div class="field">
+                                             <input name="tel" type="tel" placeholder="Телефон " pattern="[+,0-9]{1,2}-[0-9]{3}-[0-9]{3}-[0-9]{4}" value="+7" required>
+                                             <span class="validity"></span>
+                                             <p style="font-size: 8px; margin-bottom: 2%;">(Введите телефон в формате 8 или +7-123-456-7890)</p>
+                                          </div>
+                                          <div class="field">
+                                             <input name="email" id="emailreg" type="email" placeholder="Email" required>
+                                          </div>
+                                          <div class="field">
+                                             <input name="pass" id="pass2" type="password" placeholder="Пароль" required>
+                                            <p id="inform" style="color:red; font-size: 8px; margin-bottom: 2%;" class="mesage_error"></p>
+                                          </div>
+                                          <div class="field">
+                                             <input name="pass" id="pass2" type="password" placeholder="Повторить пароль" required>
+                                          </div>
+                                          <div class="field btn">
+                                             <div class="btn-layer"></div>
+                                             <input type="submit" value="Зарегистрироваться">
+                                          </div>
+                                       </form>
+                                    </div>
+                                 </div>
+                                <!-- кнопка закрытия -->
+                                 
+                                 <div class="cl-btn-2">
+                                    <div>
+                                        <div class="leftright"></div>
+                                        <div class="rightleft"></div>
+                                        <span class="close-btn" onclick="close()">закрыть</span>
+                                    </div>
+                                </div>
+                                <!-- закончилась кнопка закрытия -->
+                              </div>
+                       </div>
+                       
+        </div>
+                              
+                          <script>
+                             const loginText = document.querySelector(".title-text .login");
+                             const loginForm = document.querySelector("form.login");
+                             const loginBtn = document.querySelector("label.login");
+                             const signupBtn = document.querySelector("label.signup");
+                             const signupLink = document.querySelector("form .signup-link a");
+                             //const inform = document.getElementById('inform');
+                             const info = document.getElementById('info');
+                             const formContainer = document.getElementById('formContainer');
+                             signupBtn.onclick = (()=>{
+                               loginForm.style.marginLeft = "-50%";
+                               loginText.style.marginLeft = "-50%";
+                             });
+                             loginBtn.onclick = (()=>{
+                               loginForm.style.marginLeft = "0%";
+                               loginText.style.marginLeft = "0%";
+                             });
+                             signupLink.onclick = (()=>{
+                               signupBtn.click();
+                               return false;
+                             });
+                              function sendFormauth(form){
+                                info.innerText = '';
+                                const formData = new FormData(form);
+                                fetch("/authUser",{
+                                  method: "POST",
+                                  body: formData
+                                }).then(response=>response.text())
+                                  .then(result=>{
+                                    if(result === 'success') location.href = "/lk";
+                                    else if (result === 'error') info.innerText = `Проверьте логин или пароль`;
+                                  });
+                              }
+                              function sendForm(form){
+                                inform.innerHTML = "";
+                                const formData = new FormData(form);
+                                fetch("/regUser",{
+                                  method: "POST",
+                                  body: formData
+                                }).then(response=>response.text())
+                                  .then(result=>{
+                                    if(result==="exist") //{
+                                      inform.innerHTML = "Такой пользователь уже есть!";
+                                    else if(result==="success"){ //{
+                                      formContainer.innerHTML = 
+                                            `<p class="h4 text-center" style="font:italic 24px bold "Times New Roman", Times, serif;">Пользователь успешно зарегистрирован. 
+                                            Благодарим, за регистрацию на нашем сайте!</p>`;
+                                      setTimeout(()=>location.href="/lk",3000);
+                                    }
+                                  });
+                                
+                                console.log("Отправка формы");
+                              }
+                          </script>
+</body>
+
