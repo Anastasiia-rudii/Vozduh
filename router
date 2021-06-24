@@ -1,0 +1,127 @@
+<?php
+  header('Content-type: text/html; charset=utf-8');
+  session_start();
+  $uri = explode('/',$_SERVER['REQUEST_URI']);
+  require_once('php/db.php');
+  require_once('php/classes/User.php');
+  require_once('php/classes/Product.php');
+  require_once('php/classes/Category.php');
+  require_once('php/classes/simple_html_dom.php');
+  
+  $request = [
+    'regUser'=>function(){return User::regUser();},
+    'authUser'=>function(){return User::authUser();},
+    'updateUser'=>function(){return User::updateUser();},
+    'getUserById'=>function(){return User::getUserById($_SESSION['id']);},
+    'exit'=>function(){session_destroy(); header('Location:/');},
+    'send'=>function(){return User::send();}
+    
+    ];
+  
+   foreach($request as $key=>$handler){
+    if($uri[1]==$key){
+      exit($handler());
+    }
+  }
+  if($uri[1]==''){
+    $title = "Воздушные - шары в Павловском посаде";
+    $content = file_get_contents('view/index.html');
+    require_once('view/template.php');
+  }else if($uri[1]=='auth'){
+    $title = "Вход на сайт";
+    $content = file_get_contents('view/auth.html');
+    require_once('view/template.php');
+  }else if($uri[1]=='lk'){
+    $title = "Личный кабинет";
+    $content = file_get_contents('view/lk.php');
+    require_once('view/template.php');
+  }else if($uri[1]=='news'){
+    $title = "Нововсти";
+    $content = file_get_contents('view/news.html');
+    require_once('view/template.php');
+  }else if($uri[1]=='delivery'){
+    $title = "Доставка и Оплата";  
+    $content = file_get_contents('view/delivery.html');
+    require_once('view/template.php');
+  }else if($uri[1]=='contact'){
+    $title = "Контакты";  
+    $content = file_get_contents('view/contact.html');
+    require_once('view/template.php');
+  }else if($uri[1]=='promo'){
+    $title = "Акции";  
+    $content = file_get_contents('view/promo.html');
+    require_once('view/template.php');
+  }else if($uri[1]=='shop'){
+    $title = "магазин";  
+    $content = file_get_contents('view/shop.html');
+    require_once('view/template.php');
+  }else if($uri[1]=='cart'){
+    $title = "корзина";  
+    $content = file_get_contents('view/cart.html');
+    require_once('view/template.php'); 
+  }
+  //'addProduct'=>function(){return Product::addProduct($_POST['title'],$_POST['price'],$_POST['content'],$_POST['category']);},
+  //  'getProducts'=>function(){return Product::getProducts();},
+  //  'getProductById'=>function(){return Product::getProductById($_POST['id']);},
+
+    if($uri[1]=='goods'){
+    if($uri[2]=='chocolate'){
+      $title = "шоколадные букеты";  
+      $content = file_get_contents('view/goods/chocolate.php');
+    }else if($uri[2]=='decoration'){
+      $title = "Оформление";
+      $content = file_get_contents('view/goods/decoration.php');
+    }else if($uri[2]=='present'){
+      $title = "Игрушки ручной работы";
+      $content = file_get_contents('view/goods/present.php');
+    }else if($uri[2]=='big'){
+      $title = "Гиганты";
+      $content = file_get_contents('view/goods/big.php');
+    }else if($uri[2]=='birthday'){
+      $title = "День рождения";
+      $content = file_get_contents('view/goods/birthday.php');  
+    }else if($uri[2]=='baby'){ 
+      $title = "Для детей";
+      $content = file_get_contents('view/goods/baby.php');
+    }else if($uri[2]=='colors'){ 
+      $title = "Выбор цвета";
+      $content = file_get_contents('view/goods/colors.php');  
+    }else if($uri[2]=='heroes'){ 
+      $title = "Любимые герои";
+      $content = file_get_contents('view/goods/heroes.php');   
+    }else if($uri[2]=='flowers'){ 
+      $title = "Цветы из шаров";
+      $content = file_get_contents('view/goods/flowers.php');  
+    }else if($uri[2]=='love'){ 
+      $title = "Любовь";
+      $content = file_get_contents('view/goods/love.php');   
+    }else if($uri[2]=='newbornBaby'){
+      $title = "На выписку";
+      $content = file_get_contents('view/goods/newbornBaby.php');  
+    }else if($uri[2]=='giants'){
+      $title = "Наборы с гигантом";
+      $content = file_get_contents('view/goods/giants.php');  
+    }else if($uri[2]=='numbers'){ 
+      $title = "Наборы с цифрами";
+      $content = file_get_contents('view/goods/numbers.php'); 
+    }else if($uri[2]=='shapes'){ 
+      $title = "Фигуры из шаров";
+      $content = file_get_contents('view/goods/shapes.php');   
+    }
+    require_once('view/template.php');
+  }
+//Проверяем полученную капчу //Обрезаем пробелы с начала и с конца строки
+$captcha = trim($_POST["captcha"]);
+if(isset($_POST["captcha"]) && !empty($captcha)){
+    if(($_SESSION["rand"] != $captcha) && ($_SESSION["rand"] != "")){ //Сравниваем полученное значение с значением из сессии. 
+    $error_message = "<p class='mesage_error'><strong>Ошибка!</strong> Вы ввели неправильную капчу </p>"; // Если капча не верна, то возвращаем пользователя на страницу регистрации, и там выведем ему сообщение об ошибке что он ввёл неправильную капчу.
+    $_SESSION["error_messages"] = $error_message; // Сохраняем в сессию сообщение об ошибке. 
+    header("HTTP/1.1 301 Moved Permanently"); //Возвращаем пользователя на страницу регистрации
+    header("Location: 'rudii.beget.tech/auth'/form_register.php");    
+    exit(); //Останавливаем скрипт
+    }
+}else{
+    //Если капча не передана либо оно является пустой
+    exit("<p><strong>Ошибка!</strong> Отсутствует проверечный код, то есть код капчи. Вы можете перейти на <a href='rudii.beget.tech/auth'> главную страницу </a>.</p>");
+}
+?>
