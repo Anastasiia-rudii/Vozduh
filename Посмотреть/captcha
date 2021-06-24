@@ -1,0 +1,29 @@
+<?php
+    session_start();
+    // Генерируем случайное число.
+    $rand = mt_rand(1000, 9999);
+
+    // Сохраняем значение переменной  $rand ( капчи ) в сессию
+    $_SESSION["rand_captcha"] = $rand;
+ 
+    //создаём новое черно-белое изображение
+    $im = imageCreateTrueColor(175,50) or die;
+    
+    $brilliantWhite = imagecolorallocate($im, 237, 241, 255);
+    imagefill($im, 0, 0, $brilliantWhite);
+    
+    // Указываем белый цвет для текста
+    $c = imageColorAllocate($im, 209, 156, 151);
+ 
+    // Записываем полученное случайное число на изображение
+    imageTtfText($im, 20, 10, 50, 40, $c, "fonts/verdana.ttf", $rand);
+ 
+    header("Content-type: image/png");
+    
+    
+    // Выводим изображение
+    imagePng($im);
+ 
+    //Освобождаем ресурсы
+    imageDestroy($im);
+?>
